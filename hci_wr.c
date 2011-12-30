@@ -68,15 +68,25 @@ int hci_r(int reg)
 
 void usage()
 {
-	printf("\n[USAGE:]hci_wr r(/w) reg [value]\n");
+	printf("\n[USAGE:]hci_wr r(/w/a) reg [value]\n");
 }
 
 int main(int argc, char **argv)
 {
 	unsigned reg,val,ret;
-	if(argc==1 || argc==2 || (argc==3 && strcmp(argv[1],"r")) || (argc==4 && strcmp(argv[1],"w")) || argc>4){
+	int i;
+	if(argc==1 || (argc==2 && strcmp(argv[1],"a")) || (argc==3 && strcmp(argv[1],"r")) || (argc==4 && strcmp(argv[1],"w")) || argc>4){
 		usage();
 		return -1;
+	}
+	if(!strcmp(argv[1],"a")){
+		printf("hci_r=\n");
+		for(i=0;i<=0xff;i++){
+			ret=hci_r(i);
+			printf("0x%x\t",ret);
+		}
+		printf("\n");
+		return 0;
 	}
 	reg=strtoul(argv[2],0,10);
 	if(!strcmp(argv[1],"r")){
@@ -91,12 +101,6 @@ int main(int argc, char **argv)
 		}
 		printf("\nhci_r[0x%x]=0x%x\n",reg,hci_r(reg));
 	}
-	/*printf("hci_r=\n");
-	for(i=0;i<0xff;i++){
-		ret=hci_r(i);
-		printf("0x%x\t",ret);
-	}
-	printf("\n");*/
 	return 0;
 }
 
